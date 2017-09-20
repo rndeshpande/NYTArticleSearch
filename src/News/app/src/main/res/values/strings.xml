@@ -1,3 +1,16 @@
 <resources>
-    <string name="app_name">News</string>
+    <string name="app_name">The New York Times</string>
+    <string name="action_search">Search</string>
+    <string name="action_filter">Filter</string>
+    <string name="arts">Arts</string>
+    <string name="fashion_style"><![CDATA[Fashion & Style]]></string>
+    <string name="sports">Sports</string>
+    <string name="begin_date">Begin Date</string>
+    <string name="button_apply">Apply</string>
+    <string name="api_failure_message">Oops! something went wrong</string>
+
+    <string-array name="sort_options">
+        <item>oldest</item>
+        <item>newest</item>
+    </string-array>
 </resources>

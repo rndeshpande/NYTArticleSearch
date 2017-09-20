@@ -3,18 +3,13 @@ package com.codepath.news.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.codepath.news.R;
 import com.codepath.news.activities.DetailsActivity;
 import com.codepath.news.models.News;
-import com.codepath.news.utils.ConfigHelper;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -60,26 +55,9 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         ViewHolderNews viewHolderNews = (ViewHolderNews) viewHolder;
-
         News newsItem = mNewsItems.get(position);
-
-        final ImageView ivThumbnail = viewHolderNews.ivThumbnail;
-        final TextView tvHeadline = viewHolderNews.tvHeadline;
-        final TextView tvSnippet = viewHolderNews.tvSnippet;
-        final TextView tvSectionName = viewHolderNews.tvSectionName;
-
-        tvHeadline.setText(newsItem.headline.main);
-
-        String imagePath = ConfigHelper.getImageUrl(newsItem.multimedia.get(0).url);
-
-        Picasso.with(viewHolderNews.ivThumbnail.getContext())
-                .load(imagePath)
-                .placeholder(R.mipmap.ic_launcher)
-                .into(ivThumbnail);
-
+        viewHolderNews.bind(mContext, newsItem);
     }
-
-
 
     @Override
     public int getItemCount() {

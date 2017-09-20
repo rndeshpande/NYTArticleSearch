@@ -1,11 +1,15 @@
 package com.codepath.news.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codepath.news.R;
+import com.codepath.news.models.News;
+import com.codepath.news.utils.ConfigHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,5 +35,20 @@ public class ViewHolderNews extends RecyclerView.ViewHolder {
     public ViewHolderNews(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+    }
+
+    public void bind(Context context, News newsItem) {
+        tvHeadline.setText(newsItem.headline.main);
+
+        if (newsItem.multimedia.size() > 0) {
+            String imagePath =  ConfigHelper.getImageUrl(newsItem.multimedia.get(0).url);
+
+            Glide.with(context)
+                    .load(imagePath)
+                    .override(300,300)
+                    .placeholder(R.mipmap.ic_launcher)
+                    .into(ivThumbnail);
+        }
+
     }
 }

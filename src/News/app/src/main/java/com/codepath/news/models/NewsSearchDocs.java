@@ -12,4 +12,7 @@ public class NewsSearchDocs {
 
     @SerializedName("docs")
     public ArrayList<News> newsItems;
+
+    @SerializedName("meta")
+    public NewsSearchResponseMeta meta;
 }
