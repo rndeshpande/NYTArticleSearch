@@ -1,6 +1,8 @@
 package com.codepath.news.activities;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,9 +17,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.codepath.news.FilterDialogFragment;
 import com.codepath.news.R;
 import com.codepath.news.adapters.NewsAdapter;
 import com.codepath.news.listeners.EndlessRecyclerViewScrollListener;
+import com.codepath.news.models.FilterSettings;
 import com.codepath.news.models.News;
 import com.codepath.news.models.NewsSearchResponse;
 import com.codepath.news.utils.ConfigHelper;
@@ -36,13 +40,14 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements FilterDialogFragment.OnFragmentInteractionListener {
 
     @BindView(R.id.rvResults) RecyclerView rvResults;
 
     StaggeredGridLayoutManager mLayoutManager;
     NewsAdapter adapter;
     private EndlessRecyclerViewScrollListener scrollListener;
+    private FragmentManager fragManager;
 
     ArrayList<News> mNewsItems;
     private final int NUM_OF_COLS = 4;
@@ -59,7 +64,7 @@ public class SearchActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         initialize();
-        loadContent();
+        loadContent("");
     }
 
     private void initialize() {
@@ -74,20 +79,15 @@ public class SearchActivity extends AppCompatActivity {
         scrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                Log.d("DATA", "called on load more");
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
-                loadContent();
+                loadContent("");
             }
         };
         rvResults.addOnScrollListener(scrollListener);
     }
 
-    private void loadContent() {
-        Log.d("DATA", "HITS " + Integer.toString(mHits));
-        Log.d("DATA", "OFFSET " + Integer.toString(mOffset));
+    private void loadContent(String userSearchText) {
         if(mOffset <= mHits) {
-            getResponse(ConfigHelper.getSearchUrl(this, mOffset));
+            getResponse(ConfigHelper.getSearchUrl(this, mOffset,userSearchText));
         }
     }
 
@@ -141,7 +141,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(final String query) {
                 Toast.makeText(getApplicationContext(), query, Toast.LENGTH_LONG).show();
-
+                loadContent(query);
                 searchView.clearFocus();
                 return true;
             }
@@ -156,13 +156,28 @@ public class SearchActivity extends AppCompatActivity {
         filterItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Intent intent = new Intent(getApplicationContext(), FilterActivity.class);
-                startActivity(intent);
+                FilterSettings settings = ConfigHelper.getFilterSettings(getApplicationContext());
+                FilterDialogFragment dialogFragment = FilterDialogFragment.newInstance(settings.getBeginDate(),settings.getSortSelectedIndex(),settings.isCheckedArts(),settings.isCheckedFashion(),settings.isCheckedSports());
+                dialogFragment.show(getSupportFragmentManager(), "fragment_filter_dialog");
                 return true;
             }
         });
 
         return super.onCreateOptionsMenu(menu);
 
+    }
+
+
+    @Override
+    public void onFragmentInteraction(String beginDate, int sortSelectedIndex, String sortSelectedText, boolean isCheckedArts, boolean isCheckedFashion, boolean isCheckedSports) {
+        Toast.makeText(this, "Settings applied", Toast.LENGTH_LONG).show();
+        ConfigHelper.setFilterSettings(getApplicationContext(), beginDate, sortSelectedIndex, sortSelectedText, isCheckedArts, isCheckedFashion, isCheckedSports);
+
+        // Reset search params and trigger a fresh search
+        mHits = 0;
+        mOffset = 0;
+        mNewsItems.clear();
+        adapter.notifyItemRangeRemoved(0, mNewsItems.size());
+        loadContent("");
     }
 }

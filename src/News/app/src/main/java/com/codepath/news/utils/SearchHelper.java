@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.codepath.news.models.FilterSettings;
+
 /**
  * Created by rdeshpan on 9/18/2017.
  */
@@ -11,15 +13,11 @@ import android.preference.PreferenceManager;
 public class SearchHelper {
 
     public static String getFilterParams(Context context) {
-        SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String sort = sharedpreferences.getString("sort", "oldest");
-        String newsDesk = sharedpreferences.getString("news_desk", "");
-        String beginDate = sharedpreferences.getString("begin_date", "18510101");
 
-        String searchParams = "begin_date=" + beginDate + "&sort=" + sort + "&fq=source:(\"The New York Times\")";
-        if (newsDesk != "")
+        //String searchParams = "begin_date=" + beginDate + "&sort=" + sort + "&fq=source:(\"The New York Times\")";
+        /*if (newsDesk != "")
             searchParams += "&fq=news_desk(" + newsDesk + ")" ;
-
-        return  searchParams;
+        */
+        return  "";
     }
 }
