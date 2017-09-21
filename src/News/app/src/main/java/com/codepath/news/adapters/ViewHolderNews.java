@@ -39,6 +39,8 @@ public class ViewHolderNews extends RecyclerView.ViewHolder {
 
     public void bind(Context context, News newsItem) {
         tvHeadline.setText(newsItem.headline.main);
+        tvSectionName.setText(newsItem.sectionName);
+        tvSnippet.setText(newsItem.snippet);
 
         if (newsItem.multimedia.size() > 0) {
             String imagePath =  CommonHelper.getImageUrl(newsItem.multimedia.get(0).url);

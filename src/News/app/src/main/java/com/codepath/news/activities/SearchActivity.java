@@ -1,12 +1,15 @@
 package com.codepath.news.activities;
 
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.res.ConfigurationHelper;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,11 +18,14 @@ import android.widget.Toast;
 import com.codepath.news.fragments.FilterDialogFragment;
 import com.codepath.news.R;
 import com.codepath.news.adapters.NewsAdapter;
+import com.codepath.news.interfaces.NYTApiInterface;
 import com.codepath.news.listeners.EndlessRecyclerViewScrollListener;
 import com.codepath.news.models.FilterSettings;
 import com.codepath.news.models.News;
 import com.codepath.news.models.NewsSearchResponse;
 import com.codepath.news.utils.CommonHelper;
+import com.facebook.stetho.Stetho;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
@@ -27,12 +33,18 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+/*import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
+import okhttp3.ResponseBody;*/
 
 public class SearchActivity extends AppCompatActivity implements FilterDialogFragment.OnFragmentInteractionListener {
 
@@ -49,7 +61,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     private int mHits = 0;
     private String mUserSearch= "";
 
-    private final OkHttpClient client = new OkHttpClient();
+    //private final OkHttpClient client = new OkHttpClient();
 
 
     @Override
@@ -57,6 +69,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
+        Stetho.initializeWithDefaults(this);
 
         initialize();
         loadContent();
@@ -82,39 +95,46 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     private void loadContent() {
         if(mOffset <= mHits) {
-            getResponse(CommonHelper.getSearchUrl(this, mOffset,mUserSearch));
+            getResponse();
         }
     }
 
-    private void getResponse(String url) {
-        Request request = new Request.Builder()
-                .url(url)
+    private void getResponse() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(CommonHelper.getBaseUrlNytSearch())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
+        NYTApiInterface apiInterface = retrofit.create(NYTApiInterface.class);
 
-            @Override public void onResponse(Call call, Response response) throws IOException {
-                try (ResponseBody responseBody = response.body()) {
-                    if (!response.isSuccessful()) {
-                        throw new IOException("Unexpected code " + response);
-                    }
+        Call<NewsSearchResponse> call = apiInterface.getSearchResults(
+                CommonHelper.getUserSearchParam(mUserSearch),
+                CommonHelper.getQueryParams(this),
+                CommonHelper.getDataSource(),
+                CommonHelper.getPageParams(mOffset),
+                CommonHelper.getApiKeyNyt()
+        );
 
+        call.enqueue(new Callback<NewsSearchResponse>() {
+            @Override
+            public void onResponse(Call<NewsSearchResponse> call, Response<NewsSearchResponse> response) {
+                if (!response.isSuccessful()) {
+                    Log.d("DATA", Integer.toString(response.code()));
+                }
+                else {
                     GsonBuilder gsonBuilder = new GsonBuilder();
-                    final NewsSearchResponse searchResponse = gsonBuilder.create().fromJson(responseBody.string(), NewsSearchResponse.class);
+                    final NewsSearchResponse searchResponse = response.body();
                     final ArrayList<News> resultNews = searchResponse.newsDocs.newsItems;
                     mOffset = searchResponse.newsDocs.meta.offset;
                     mHits = searchResponse.newsDocs.meta.hits;
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            updateDataset(resultNews);
-                        }
-                    });
+                    updateDataset(resultNews);
                 }
+            }
+
+            @Override
+            public void onFailure(Call<NewsSearchResponse> call, Throwable t) {
+
             }
         });
     }

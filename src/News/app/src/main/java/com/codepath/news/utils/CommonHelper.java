@@ -7,45 +7,45 @@ import android.util.Log;
 
 import com.codepath.news.models.FilterSettings;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by rdeshpan on 9/18/2017.
  */
 
 public class CommonHelper {
 
-    private static final String baseUrlNytSearch = "https://api.nytimes.com/svc/search/v2/articlesearch.json?";
+    //private static final String baseUrlNytSearch = "https://api.nytimes.com/svc/search/v2/articlesearch.json/";
+    private static final String baseUrlNytSearch = "https://api.nytimes.com/svc/search/v2/";
     private static final String baseUrlNyt = "http://www.nytimes.com/";
     private static final String API_KEY_NYT = "a7f303d47b8e4c72ba51dd5808d64a31";
 
-    public static String getSearchUrl(Context context, int offset, String userSearchText) {
-        String filterParams = getFilterQuery(context, userSearchText);
-        String page = Integer.toString(offset/10);
-        String url = baseUrlNytSearch + filterParams + "&page=" + page + "&api_key=" + API_KEY_NYT;
+    public static String getBaseUrlNytSearch() {
+        return  baseUrlNytSearch;
+    }
 
-        Log.d("DATA", url);
-        return url;
+    public static String getApiKeyNyt() {
+        return API_KEY_NYT;
+    }
+
+    public static String getDataSource() {
+        return "source:(\"The New York Times\")";
     }
 
     public static String getImageUrl(String relativePath) {
         return baseUrlNyt + relativePath;
     }
 
-    private static String getFilterQuery(Context context, String userSearchText) {
+    public static Map<String, String> getQueryParams(Context context) {
         FilterSettings settings = getFilterSettings(context);
+        Map<String, String> map = new HashMap<>();
 
-        StringBuilder query = new StringBuilder();
-
-        String beginMonth = settings.getBeginMonth().length() == 1 ? "0" + settings.getBeginMonth() : settings.getBeginMonth();
-        String beginDay = settings.getBeginDay().length() == 1 ? "0" + settings.getBeginDay() : settings.getBeginDay();
+        String beginMonth = settings.getBeginMonth().length() > 1 ? settings.getBeginMonth() : "0" + settings.getBeginMonth();
+        String beginDay = settings.getBeginDay().length() > 1 ? settings.getBeginDay() : "0" + settings.getBeginDay();
         String beginDate = settings.getBeginYear() + beginMonth + beginDay;
-
-        query.append("begin_date=").append(beginDate)
-                .append("&sort=").append(settings.getSortSelectedText());
-
-        if (userSearchText != "")
-                query.append("&fq=\"").append(userSearchText).append("\"");
-
-        query.append("&fq=source:(\"The New York Times\")");
+        map.put("begin_date", beginDate);
+        map.put("sort", settings.getSortSelectedText());
 
         StringBuilder news_desk = new StringBuilder();
 
@@ -58,10 +58,20 @@ public class CommonHelper {
         if (settings.isCheckedSports())
             news_desk.append("\"Sports\" ");
 
-        if (news_desk.toString() != "")
-            query.append("&fq=news_desk(").append(news_desk.toString().trim()).append(")");
+        map.put("fq","news_desk:(" + news_desk.toString().trim() + ")");
+        return map;
+    }
 
-        return query.toString();
+    public static String getUserSearchParam(String userSearchText) {
+        String searchParam = null;
+        if (userSearchText != "") {
+            searchParam = "\"" + userSearchText + "\"";
+        }
+        return searchParam;
+    }
+
+    public static int getPageParams(int offset) {
+        return offset/10;
     }
 
     public static FilterSettings getFilterSettings(Context context) {
