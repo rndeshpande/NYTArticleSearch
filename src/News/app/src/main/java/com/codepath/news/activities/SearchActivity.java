@@ -12,7 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.codepath.news.FilterDialogFragment;
+import com.codepath.news.fragments.FilterDialogFragment;
 import com.codepath.news.R;
 import com.codepath.news.adapters.NewsAdapter;
 import com.codepath.news.listeners.EndlessRecyclerViewScrollListener;
@@ -153,7 +153,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 FilterSettings settings = CommonHelper.getFilterSettings(getApplicationContext());
-                FilterDialogFragment dialogFragment = FilterDialogFragment.newInstance(settings.getBeginYear(), settings.getBeginMonth(), settings.getBeginDay(), settings.getSortSelectedIndex(),settings.isCheckedArts(),settings.isCheckedFashion(),settings.isCheckedSports());
+                FilterDialogFragment dialogFragment = FilterDialogFragment.newInstance(settings);
                 dialogFragment.show(getSupportFragmentManager(), "fragment_filter_dialog");
                 return true;
             }
@@ -164,9 +164,9 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
 
     @Override
-    public void onFragmentInteraction(String beginYear, String beginMonth, String beginDay, int sortSelectedIndex, String sortSelectedText, boolean isCheckedArts, boolean isCheckedFashion, boolean isCheckedSports) {
+    public void onFragmentInteraction(FilterSettings settings) {
         Toast.makeText(this, "Settings applied", Toast.LENGTH_SHORT).show();
-        CommonHelper.setFilterSettings(getApplicationContext(), beginYear, beginMonth, beginDay, sortSelectedIndex, sortSelectedText, isCheckedArts, isCheckedFashion, isCheckedSports);
+        CommonHelper.setFilterSettings(getApplicationContext(), settings);
 
         // Reset search params and trigger a fresh search
         resetSearch();

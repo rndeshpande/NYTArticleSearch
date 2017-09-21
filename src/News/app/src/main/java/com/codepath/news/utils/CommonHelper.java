@@ -78,18 +78,18 @@ public class CommonHelper {
         return new FilterSettings(beginYear, beginMonth, beginDay, sortSelectedIndex, sortSelectedText, isCheckedArts, isCheckedFashion, isCheckedSports);
     }
 
-    public static void setFilterSettings(Context context, String beginYear, String beginMonth, String beginDay, int sortSelectedIndex, String sortSelectedText, boolean isCheckedArts, boolean isCheckedFashion, boolean isCheckedSports) {
+    public static void setFilterSettings(Context context, FilterSettings settings) {
         SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
-        editor.putString("begin_year", beginYear);
-        editor.putString("begin_month", beginMonth);
-        editor.putString("begin_day", beginDay);
-        editor.putInt("sortSelectedIndex", sortSelectedIndex);
-        editor.putString("sortSelectedText", sortSelectedText);
-        editor.putBoolean("isCheckedArts", isCheckedArts);
-        editor.putBoolean("isCheckedFashion", isCheckedFashion);
-        editor.putBoolean("isCheckedSports", isCheckedSports);
+        editor.putString("begin_year", settings.getBeginYear());
+        editor.putString("begin_month", settings.getBeginMonth());
+        editor.putString("begin_day", settings.getBeginDay());
+        editor.putInt("sortSelectedIndex", settings.getSortSelectedIndex());
+        editor.putString("sortSelectedText", settings.getSortSelectedText());
+        editor.putBoolean("isCheckedArts", settings.isCheckedArts());
+        editor.putBoolean("isCheckedFashion", settings.isCheckedFashion());
+        editor.putBoolean("isCheckedSports", settings.isCheckedSports());
 
         editor.apply();
     }
