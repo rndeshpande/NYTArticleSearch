@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -28,8 +29,8 @@ import butterknife.ButterKnife;
  */
 public class FilterDialogFragment extends DialogFragment {
 
-    @BindView(R.id.etBeginDate)
-    EditText etBeginDate;
+    @BindView(R.id.dpBeginDate)
+    DatePicker dpBeginDate;
 
     @BindView(R.id.spSort)
     Spinner spSort;
@@ -53,11 +54,13 @@ public class FilterDialogFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    public static FilterDialogFragment newInstance(String beginDate, int sortSelectedIndex, boolean isCheckedArts, boolean isCheckedFashion, boolean isCheckedSports) {
+    public static FilterDialogFragment newInstance(String beginYear, String beginMonth, String beginDay, int sortSelectedIndex, boolean isCheckedArts, boolean isCheckedFashion, boolean isCheckedSports) {
         FilterDialogFragment fragment = new FilterDialogFragment();
 
         Bundle args = new Bundle();
-        args.putString("beginDate", beginDate);
+        args.putString("beginYear", beginYear);
+        args.putString("beginMonth", beginMonth);
+        args.putString("beginDay", beginDay);
         args.putInt("sortSelectedIndex", sortSelectedIndex);
         args.putBoolean("isCheckedArts", isCheckedArts);
         args.putBoolean("isCheckedFashion", isCheckedFashion);
@@ -81,7 +84,11 @@ public class FilterDialogFragment extends DialogFragment {
         ButterKnife.bind(this, view);
         if (getArguments() != null) {
 
-            etBeginDate.setText(getArguments().getString("beginDate"));
+            String year = getArguments().getString("beginYear");
+            String month = getArguments().getString("beginMonth");
+            String day = getArguments().getString("beginDay");
+            dpBeginDate.updateDate(Integer.parseInt(year),Integer.parseInt(month), Integer.parseInt(day));
+
             spSort.setSelection(getArguments().getInt("sortSelectedIndex"));
             cbArts.setChecked(getArguments().getBoolean("isCheckedArts"));
             cbFashion.setChecked(getArguments().getBoolean("isCheckedFashion"));
@@ -101,7 +108,8 @@ public class FilterDialogFragment extends DialogFragment {
     public void onButtonPressed() {
         mListener = (OnFragmentInteractionListener) getActivity();
         if (mListener != null) {
-            mListener.onFragmentInteraction(etBeginDate.getText().toString(), spSort.getSelectedItemPosition(),spSort.getSelectedItem().toString(), cbArts.isChecked(), cbFashion.isChecked(), cbSports.isChecked());
+
+            mListener.onFragmentInteraction(Integer.toString(dpBeginDate.getYear()), Integer.toString(dpBeginDate.getMonth()), Integer.toString(dpBeginDate.getDayOfMonth()), spSort.getSelectedItemPosition(),spSort.getSelectedItem().toString(), cbArts.isChecked(), cbFashion.isChecked(), cbSports.isChecked());
         }
     }
 
@@ -133,6 +141,6 @@ public class FilterDialogFragment extends DialogFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(String beginDate, int sortItemIndex, String sortSelectedText, boolean isCheckedArts, boolean isCheckedFashion, boolean isCheckedSports);
+        void onFragmentInteraction(String beginYear, String beginMonth, String beginDay, int sortItemIndex, String sortSelectedText, boolean isCheckedArts, boolean isCheckedFashion, boolean isCheckedSports);
     }
 }

@@ -1,17 +1,12 @@
 package com.codepath.news.activities;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,12 +19,11 @@ import com.codepath.news.listeners.EndlessRecyclerViewScrollListener;
 import com.codepath.news.models.FilterSettings;
 import com.codepath.news.models.News;
 import com.codepath.news.models.NewsSearchResponse;
-import com.codepath.news.utils.ConfigHelper;
+import com.codepath.news.utils.CommonHelper;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Filter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +47,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     private final int NUM_OF_COLS = 4;
     private int mOffset = 0;
     private int mHits = 0;
+    private String mUserSearch= "";
 
     private final OkHttpClient client = new OkHttpClient();
 
@@ -64,7 +59,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         ButterKnife.bind(this);
 
         initialize();
-        loadContent("");
+        loadContent();
     }
 
     private void initialize() {
@@ -79,15 +74,15 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         scrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                loadContent("");
+                loadContent();
             }
         };
         rvResults.addOnScrollListener(scrollListener);
     }
 
-    private void loadContent(String userSearchText) {
+    private void loadContent() {
         if(mOffset <= mHits) {
-            getResponse(ConfigHelper.getSearchUrl(this, mOffset,userSearchText));
+            getResponse(CommonHelper.getSearchUrl(this, mOffset,mUserSearch));
         }
     }
 
@@ -140,8 +135,9 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(final String query) {
-                Toast.makeText(getApplicationContext(), query, Toast.LENGTH_LONG).show();
-                loadContent(query);
+                resetSearch();
+                mUserSearch = query;
+                loadContent();
                 searchView.clearFocus();
                 return true;
             }
@@ -156,28 +152,31 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         filterItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                FilterSettings settings = ConfigHelper.getFilterSettings(getApplicationContext());
-                FilterDialogFragment dialogFragment = FilterDialogFragment.newInstance(settings.getBeginDate(),settings.getSortSelectedIndex(),settings.isCheckedArts(),settings.isCheckedFashion(),settings.isCheckedSports());
+                FilterSettings settings = CommonHelper.getFilterSettings(getApplicationContext());
+                FilterDialogFragment dialogFragment = FilterDialogFragment.newInstance(settings.getBeginYear(), settings.getBeginMonth(), settings.getBeginDay(), settings.getSortSelectedIndex(),settings.isCheckedArts(),settings.isCheckedFashion(),settings.isCheckedSports());
                 dialogFragment.show(getSupportFragmentManager(), "fragment_filter_dialog");
                 return true;
             }
         });
 
         return super.onCreateOptionsMenu(menu);
-
     }
 
 
     @Override
-    public void onFragmentInteraction(String beginDate, int sortSelectedIndex, String sortSelectedText, boolean isCheckedArts, boolean isCheckedFashion, boolean isCheckedSports) {
-        Toast.makeText(this, "Settings applied", Toast.LENGTH_LONG).show();
-        ConfigHelper.setFilterSettings(getApplicationContext(), beginDate, sortSelectedIndex, sortSelectedText, isCheckedArts, isCheckedFashion, isCheckedSports);
+    public void onFragmentInteraction(String beginYear, String beginMonth, String beginDay, int sortSelectedIndex, String sortSelectedText, boolean isCheckedArts, boolean isCheckedFashion, boolean isCheckedSports) {
+        Toast.makeText(this, "Settings applied", Toast.LENGTH_SHORT).show();
+        CommonHelper.setFilterSettings(getApplicationContext(), beginYear, beginMonth, beginDay, sortSelectedIndex, sortSelectedText, isCheckedArts, isCheckedFashion, isCheckedSports);
 
         // Reset search params and trigger a fresh search
+        resetSearch();
+        loadContent();
+    }
+
+    private void resetSearch() {
         mHits = 0;
         mOffset = 0;
         mNewsItems.clear();
-        adapter.notifyItemRangeRemoved(0, mNewsItems.size());
-        loadContent("");
+        adapter.notifyDataSetChanged();
     }
 }

@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.codepath.news.R;
 import com.codepath.news.models.News;
-import com.codepath.news.utils.ConfigHelper;
+import com.codepath.news.utils.CommonHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +41,7 @@ public class ViewHolderNews extends RecyclerView.ViewHolder {
         tvHeadline.setText(newsItem.headline.main);
 
         if (newsItem.multimedia.size() > 0) {
-            String imagePath =  ConfigHelper.getImageUrl(newsItem.multimedia.get(0).url);
+            String imagePath =  CommonHelper.getImageUrl(newsItem.multimedia.get(0).url);
 
             Glide.with(context)
                     .load(imagePath)

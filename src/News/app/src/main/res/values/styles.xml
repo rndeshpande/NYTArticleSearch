@@ -12,5 +12,14 @@
     </style>
 
     <style name="date_picker_theme" parent="@android:style/Widget.DatePicker"></style>
+    
+    <style name="filter_title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
+    <style name="FilterDialog" parent="@android:style/Theme.Holo.Light" >
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 </resources>

@@ -11,6 +11,8 @@ import com.codepath.news.R;
 import com.codepath.news.activities.DetailsActivity;
 import com.codepath.news.models.News;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -44,7 +46,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         int position = viewHolder.getAdapterPosition();
                         News newsItem = mNewsItems.get(position);
                         Intent intent = new Intent(context, DetailsActivity.class);
-                        intent.putExtra("url", newsItem.webUrl);
+                        intent.putExtra("web_url", newsItem.webUrl);
                         context.startActivity(intent);
                     }
             });

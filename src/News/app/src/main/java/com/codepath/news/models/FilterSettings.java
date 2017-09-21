@@ -1,12 +1,16 @@
 package com.codepath.news.models;
 
+import org.parceler.Parcel;
+
 /**
  * Created by rdeshpan on 9/20/2017.
  */
 
 public class FilterSettings {
 
-    private String beginDate;
+    private String beginYear;
+    private String beginMonth;
+    private String beginDay;
     private int sortSelectedIndex;
     private String sortSelectedText;
     private boolean isCheckedArts;
@@ -16,21 +20,15 @@ public class FilterSettings {
     public FilterSettings() {
     }
 
-    public FilterSettings(String beginDate, int sortSelectedIndex, String sortSelectedText, boolean isCheckedArts, boolean isCheckedFashion, boolean isCheckedSports) {
-        this.beginDate = beginDate;
+    public FilterSettings(String beginYear, String beginMonth, String beginDay, int sortSelectedIndex, String sortSelectedText, boolean isCheckedArts, boolean isCheckedFashion, boolean isCheckedSports) {
+        this.beginYear = beginYear;
+        this.beginMonth = beginMonth;
+        this.beginDay = beginDay;
         this.sortSelectedIndex = sortSelectedIndex;
         this.sortSelectedText = sortSelectedText;
         this.isCheckedArts = isCheckedArts;
         this.isCheckedFashion = isCheckedFashion;
         this.isCheckedSports = isCheckedSports;
-    }
-
-    public String getBeginDate() {
-        return beginDate;
-    }
-
-    public void setBeginDate(String beginDate) {
-        this.beginDate = beginDate;
     }
 
     public int getSortSelectedIndex() {
@@ -69,7 +67,29 @@ public class FilterSettings {
         return sortSelectedText;
     }
 
-    public void setSortSelectedText(String sortSelectedText) {
-        this.sortSelectedText = sortSelectedText;
+    public void setSortSelectedText(String sortSelectedText) { this.sortSelectedText = sortSelectedText; }
+
+    public String getBeginYear() {
+        return beginYear;
+    }
+
+    public void setBeginYear(String beginYear) {
+        this.beginYear = beginYear;
+    }
+
+    public String getBeginMonth() {
+        return beginMonth;
+    }
+
+    public void setBeginMonth(String beginMonth) {
+        this.beginMonth = beginMonth;
+    }
+
+    public String getBeginDay() {
+        return beginDay;
+    }
+
+    public void setBeginDay(String beginDay) {
+        this.beginDay = beginDay;
     }
 }
