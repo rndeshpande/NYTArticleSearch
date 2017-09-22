@@ -1,5 +1,6 @@
 package com.codepath.news.activities;
 
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 
 import android.support.v4.view.MenuItemCompat;
@@ -42,7 +43,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SearchActivity extends AppCompatActivity implements FilterDialogFragment.OnFragmentInteractionListener {
 
-    @BindView(R.id.rvResults) RecyclerView rvResults;
+    @BindView(R.id.rvResults)
+    RecyclerView rvResults;
 
     StaggeredGridLayoutManager mLayoutManager;
     NewsAdapter adapter;
@@ -53,7 +55,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     private final int NUM_OF_COLS = 4;
     private int mOffset = 0;
     private int mHits = 0;
-    private String mUserSearch= "";
+    private String mUserSearch = "";
 
 
     @Override
@@ -73,7 +75,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
         rvResults.setAdapter(adapter);
 
-        mLayoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         rvResults.setLayoutManager(mLayoutManager);
 
         scrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
@@ -86,7 +88,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     }
 
     private void loadContent() {
-        if(mOffset <= mHits) {
+        if (mOffset <= mHits) {
             getResponse();
         }
     }
@@ -112,8 +114,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
             public void onResponse(Call<NewsSearchResponse> call, Response<NewsSearchResponse> response) {
                 if (!response.isSuccessful()) {
                     Log.d("DATA", Integer.toString(response.code()));
-                }
-                else {
+                } else {
                     GsonBuilder gsonBuilder = new GsonBuilder();
                     final NewsSearchResponse searchResponse = response.body();
                     final ArrayList<News> resultNews = searchResponse.newsDocs.newsItems;
@@ -177,7 +178,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     @Override
     public void onFragmentInteraction(FilterSettings settings) {
-        Toast.makeText(this, "Settings applied", Toast.LENGTH_SHORT).show();
+        Snackbar.make(this.findViewById(R.id.clMain), "Settings Updated", Snackbar.LENGTH_LONG).show();
         CommonHelper.setFilterSettings(getApplicationContext(), settings);
 
         // Reset search params and trigger a fresh search
