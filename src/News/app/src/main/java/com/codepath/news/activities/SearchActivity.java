@@ -1,8 +1,7 @@
 package com.codepath.news.activities;
 
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.res.ConfigurationHelper;
+
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,26 +24,21 @@ import com.codepath.news.models.News;
 import com.codepath.news.models.NewsSearchResponse;
 import com.codepath.news.utils.CommonHelper;
 import com.facebook.stetho.Stetho;
-import com.facebook.stetho.okhttp3.StethoInterceptor;
+
 import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.OkHttpClient;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-/*import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;*/
 
 public class SearchActivity extends AppCompatActivity implements FilterDialogFragment.OnFragmentInteractionListener {
 
@@ -60,8 +54,6 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     private int mOffset = 0;
     private int mHits = 0;
     private String mUserSearch= "";
-
-    //private final OkHttpClient client = new OkHttpClient();
 
 
     @Override
@@ -134,7 +126,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
             @Override
             public void onFailure(Call<NewsSearchResponse> call, Throwable t) {
-
+                //TODO : Add error handling
             }
         });
     }
@@ -165,6 +157,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                mUserSearch = newText;
                 return false;
             }
         });
@@ -173,7 +166,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
         filterItem.setOnMenuItemClickListener(v -> {
             FilterSettings settings = CommonHelper.getFilterSettings(SearchActivity.this.getApplicationContext());
-            FilterDialogFragment dialogFragment = FilterDialogFragment.newInstance(settings);
+            FilterDialogFragment dialogFragment = FilterDialogFragment.newInstance(Parcels.wrap(settings));
             dialogFragment.show(SearchActivity.this.getSupportFragmentManager(), "fragment_filter_dialog");
             return true;
         });

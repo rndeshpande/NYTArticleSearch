@@ -5,7 +5,7 @@ import org.parceler.Parcel;
 /**
  * Created by rdeshpan on 9/20/2017.
  */
-
+@Parcel
 public class FilterSettings {
 
     private String beginYear;

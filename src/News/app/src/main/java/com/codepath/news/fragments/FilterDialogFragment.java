@@ -2,6 +2,7 @@ package com.codepath.news.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import android.widget.Spinner;
 
 import com.codepath.news.R;
 import com.codepath.news.models.FilterSettings;
+
+import org.parceler.Parcels;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +57,15 @@ public class FilterDialogFragment extends DialogFragment {
         // Required empty public constructor
     }
 
+    public static FilterDialogFragment newInstance(Parcelable settings) {
+        FilterDialogFragment fragment = new FilterDialogFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("filter_settings", settings);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    /*
     public static FilterDialogFragment newInstance(FilterSettings settings) {
         FilterDialogFragment fragment = new FilterDialogFragment();
 
@@ -70,6 +82,7 @@ public class FilterDialogFragment extends DialogFragment {
         fragment.setArguments(args);
         return fragment;
     }
+    */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,16 +98,8 @@ public class FilterDialogFragment extends DialogFragment {
         ButterKnife.bind(this, view);
 
         if (getArguments() != null) {
-
-            String year = getArguments().getString("beginYear");
-            String month = getArguments().getString("beginMonth");
-            String day = getArguments().getString("beginDay");
-            dpBeginDate.updateDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
-
-            spSort.setSelection(getArguments().getInt("sortSelectedIndex"));
-            cbArts.setChecked(getArguments().getBoolean("isCheckedArts"));
-            cbFashion.setChecked(getArguments().getBoolean("isCheckedFashion"));
-            cbSports.setChecked(getArguments().getBoolean("isCheckedSports"));
+            FilterSettings settings = (FilterSettings) Parcels.unwrap(getArguments().getParcelable("filter_settings"));
+            setFields(settings);
         }
 
         btnApply.setOnClickListener(v -> {
@@ -105,10 +110,27 @@ public class FilterDialogFragment extends DialogFragment {
         return view;
     }
 
+    private void setFields(FilterSettings settings) {
+        dpBeginDate.updateDate(Integer.parseInt(settings.getBeginYear()), Integer.parseInt(settings.getBeginMonth()), Integer.parseInt(settings.getBeginDay()));
+
+        spSort.setSelection(settings.getSortSelectedIndex());
+        cbArts.setChecked(settings.isCheckedArts());
+        cbFashion.setChecked(settings.isCheckedFashion());
+        cbSports.setChecked(settings.isCheckedSports());
+    }
+
     public void onButtonPressed() {
         mListener = (OnFragmentInteractionListener) getActivity();
         if (mListener != null) {
-            FilterSettings settings = new FilterSettings(Integer.toString(dpBeginDate.getYear()), Integer.toString(dpBeginDate.getMonth()), Integer.toString(dpBeginDate.getDayOfMonth()), spSort.getSelectedItemPosition(), spSort.getSelectedItem().toString(), cbArts.isChecked(), cbFashion.isChecked(), cbSports.isChecked());
+            FilterSettings settings = new FilterSettings(Integer.toString(dpBeginDate.getYear()),
+                    Integer.toString(dpBeginDate.getMonth()),
+                    Integer.toString(dpBeginDate.getDayOfMonth()),
+                    spSort.getSelectedItemPosition(),
+                    spSort.getSelectedItem().toString(),
+                    cbArts.isChecked(),
+                    cbFashion.isChecked(),
+                    cbSports.isChecked());
+
             mListener.onFragmentInteraction(settings);
         }
     }

@@ -24,7 +24,7 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<News> mNewsItems;
-    Context mContext;
+    private Context mContext;
 
     public NewsAdapter(Context context, ArrayList<News> newsItems) {
         mContext = context;

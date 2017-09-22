@@ -16,10 +16,19 @@ import java.util.Map;
 
 public class CommonHelper {
 
-    //private static final String baseUrlNytSearch = "https://api.nytimes.com/svc/search/v2/articlesearch.json/";
     private static final String baseUrlNytSearch = "https://api.nytimes.com/svc/search/v2/";
     private static final String baseUrlNyt = "http://www.nytimes.com/";
     private static final String API_KEY_NYT = "a7f303d47b8e4c72ba51dd5808d64a31";
+
+    private static final String BEGIN_YEAR = "begin_year";
+    private static final String BEGIN_MONTH = "begin_month";
+    private static final String BEGIN_DAY = "begin_day";
+    private static final String SORT_SELECTED_INDEX = "sortSelectedIndex";
+    private static final String SORT_SELECTED_TEXT = "sortSelectedText";
+    private static final String IS_CHECKED_ARTS = "isCheckedArts";
+    private static final String IS_CHECKED_FASHION = "isCheckedFashion";
+    private static final String IS_CHECKED_SPORTS = "isCheckedSports";
+
 
     public static String getBaseUrlNytSearch() {
         return  baseUrlNytSearch;
@@ -75,15 +84,16 @@ public class CommonHelper {
     }
 
     public static FilterSettings getFilterSettings(Context context) {
+
         SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String beginYear = sharedpreferences.getString("begin_year", "1851");
-        String beginMonth = sharedpreferences.getString("begin_month", "01");
-        String beginDay = sharedpreferences.getString("begin_day", "01");
-        int sortSelectedIndex = sharedpreferences.getInt("sortSelectedIndex", 1);
-        String sortSelectedText = sharedpreferences.getString("sortSelectedText", "newest");
-        Boolean isCheckedArts = sharedpreferences.getBoolean("isCheckedArts", false);
-        Boolean isCheckedFashion = sharedpreferences.getBoolean("isCheckedFashion", false);
-        Boolean isCheckedSports = sharedpreferences.getBoolean("isCheckedSports", false);
+        String beginYear = sharedpreferences.getString(BEGIN_YEAR, "1851");
+        String beginMonth = sharedpreferences.getString(BEGIN_MONTH, "01");
+        String beginDay = sharedpreferences.getString(BEGIN_DAY, "01");
+        int sortSelectedIndex = sharedpreferences.getInt(SORT_SELECTED_INDEX, 1);
+        String sortSelectedText = sharedpreferences.getString(SORT_SELECTED_TEXT, "newest");
+        Boolean isCheckedArts = sharedpreferences.getBoolean(IS_CHECKED_ARTS, false);
+        Boolean isCheckedFashion = sharedpreferences.getBoolean(IS_CHECKED_FASHION, false);
+        Boolean isCheckedSports = sharedpreferences.getBoolean(IS_CHECKED_SPORTS, false);
 
         return new FilterSettings(beginYear, beginMonth, beginDay, sortSelectedIndex, sortSelectedText, isCheckedArts, isCheckedFashion, isCheckedSports);
     }
@@ -92,14 +102,14 @@ public class CommonHelper {
         SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
-        editor.putString("begin_year", settings.getBeginYear());
-        editor.putString("begin_month", settings.getBeginMonth());
-        editor.putString("begin_day", settings.getBeginDay());
-        editor.putInt("sortSelectedIndex", settings.getSortSelectedIndex());
-        editor.putString("sortSelectedText", settings.getSortSelectedText());
-        editor.putBoolean("isCheckedArts", settings.isCheckedArts());
-        editor.putBoolean("isCheckedFashion", settings.isCheckedFashion());
-        editor.putBoolean("isCheckedSports", settings.isCheckedSports());
+        editor.putString(BEGIN_YEAR, settings.getBeginYear());
+        editor.putString(BEGIN_MONTH, settings.getBeginMonth());
+        editor.putString(BEGIN_DAY, settings.getBeginDay());
+        editor.putInt(SORT_SELECTED_INDEX, settings.getSortSelectedIndex());
+        editor.putString(SORT_SELECTED_TEXT, settings.getSortSelectedText());
+        editor.putBoolean(IS_CHECKED_ARTS, settings.isCheckedArts());
+        editor.putBoolean(IS_CHECKED_FASHION, settings.isCheckedFashion());
+        editor.putBoolean(IS_CHECKED_SPORTS, settings.isCheckedSports());
 
         editor.apply();
     }

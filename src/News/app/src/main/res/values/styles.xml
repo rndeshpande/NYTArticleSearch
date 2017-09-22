@@ -9,16 +9,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppThemeMaterial" parent="android:Theme.Material">
-        <!-- Main theme colors -->
-        <!--   your app branding color for the app bar -->
-        <item name="android:colorPrimary">@color/colorPrimary</item>
-        <!--   darker variant for the status bar and contextual app bars -->
-        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
-        <!--   theme UI controls like checkboxes and text fields -->
-        <item name="android:colorAccent">@color/colorAccent</item>
-    </style>
-
     <style name="BaseView">
         <item name="android:layout_margin">15dp</item>
     </style>
@@ -27,17 +17,13 @@
         <item name="android:padding">5dp</item>
     </style>
 
-    <style name="date_picker_theme" parent="@android:style/Widget.DatePicker"></style>
+    <style name="date_picker_theme" parent="@android:style/Widget.DatePicker" />
     
     <style name="filter_title">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="FilterDialog" parent="@android:style/Theme.Holo.Light" >
-        <item name="android:windowBackground">@null</item>
-        <item name="android:windowIsFloating">true</item>
-    </style>
     <style name="ListItemHeadline">
         <item name="android:textSize">17sp</item>
         <item name="android:textStyle">bold</item>
