@@ -152,6 +152,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(final String query) {
@@ -169,14 +170,12 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         });
 
         MenuItem filterItem = menu.findItem(R.id.action_filter);
-        filterItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                FilterSettings settings = CommonHelper.getFilterSettings(getApplicationContext());
-                FilterDialogFragment dialogFragment = FilterDialogFragment.newInstance(settings);
-                dialogFragment.show(getSupportFragmentManager(), "fragment_filter_dialog");
-                return true;
-            }
+
+        filterItem.setOnMenuItemClickListener(v -> {
+            FilterSettings settings = CommonHelper.getFilterSettings(SearchActivity.this.getApplicationContext());
+            FilterDialogFragment dialogFragment = FilterDialogFragment.newInstance(settings);
+            dialogFragment.show(SearchActivity.this.getSupportFragmentManager(), "fragment_filter_dialog");
+            return true;
         });
 
         return super.onCreateOptionsMenu(menu);

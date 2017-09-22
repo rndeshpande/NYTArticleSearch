@@ -54,7 +54,7 @@ public class FilterDialogFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    public static FilterDialogFragment newInstance (FilterSettings settings) {
+    public static FilterDialogFragment newInstance(FilterSettings settings) {
         FilterDialogFragment fragment = new FilterDialogFragment();
 
         Bundle args = new Bundle();
@@ -81,7 +81,7 @@ public class FilterDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view =inflater.inflate(R.layout.fragment_filter_dialog, container, false);
+        View view = inflater.inflate(R.layout.fragment_filter_dialog, container, false);
         ButterKnife.bind(this, view);
 
         if (getArguments() != null) {
@@ -89,7 +89,7 @@ public class FilterDialogFragment extends DialogFragment {
             String year = getArguments().getString("beginYear");
             String month = getArguments().getString("beginMonth");
             String day = getArguments().getString("beginDay");
-            dpBeginDate.updateDate(Integer.parseInt(year),Integer.parseInt(month), Integer.parseInt(day));
+            dpBeginDate.updateDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day));
 
             spSort.setSelection(getArguments().getInt("sortSelectedIndex"));
             cbArts.setChecked(getArguments().getBoolean("isCheckedArts"));
@@ -97,11 +97,9 @@ public class FilterDialogFragment extends DialogFragment {
             cbSports.setChecked(getArguments().getBoolean("isCheckedSports"));
         }
 
-        btnApply.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                onButtonPressed();
-                dismiss();
-            }
+        btnApply.setOnClickListener(v -> {
+            onButtonPressed();
+            dismiss();
         });
 
         return view;
@@ -110,7 +108,7 @@ public class FilterDialogFragment extends DialogFragment {
     public void onButtonPressed() {
         mListener = (OnFragmentInteractionListener) getActivity();
         if (mListener != null) {
-            FilterSettings settings = new FilterSettings(Integer.toString(dpBeginDate.getYear()), Integer.toString(dpBeginDate.getMonth()), Integer.toString(dpBeginDate.getDayOfMonth()), spSort.getSelectedItemPosition(),spSort.getSelectedItem().toString(), cbArts.isChecked(), cbFashion.isChecked(), cbSports.isChecked());
+            FilterSettings settings = new FilterSettings(Integer.toString(dpBeginDate.getYear()), Integer.toString(dpBeginDate.getMonth()), Integer.toString(dpBeginDate.getDayOfMonth()), spSort.getSelectedItemPosition(), spSort.getSelectedItem().toString(), cbArts.isChecked(), cbFashion.isChecked(), cbSports.isChecked());
             mListener.onFragmentInteraction(settings);
         }
     }

@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 25
     buildToolsVersion "26.0.0"
+
     defaultConfig {
         applicationId "com.codepath.news"
         minSdkVersion 21
@@ -16,6 +17,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -58,3 +63,7 @@ dependencies {
     compile 'com.facebook.stetho:stetho:1.4.1'
     compile 'com.facebook.stetho:stetho-okhttp3:1.4.1'
 }
+
+apply plugin: 'com.android.application'
+
+apply plugin: 'me.tatarka.retrolambda' // make sure to apply last!

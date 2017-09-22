@@ -39,17 +39,13 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         View itemView = inflater.inflate(R.layout.list_news, parent, false);
         viewHolder = new ViewHolderNews(itemView);
-        itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Context context = v.getContext();
-                        int position = viewHolder.getAdapterPosition();
-                        News newsItem = mNewsItems.get(position);
-                        Intent intent = new Intent(context, DetailsActivity.class);
-                        intent.putExtra("web_url", newsItem.webUrl);
-                        context.startActivity(intent);
-                    }
-            });
+        itemView.setOnClickListener(v -> {
+            int position = viewHolder.getAdapterPosition();
+            News newsItem = mNewsItems.get(position);
+            Intent intent = new Intent(mContext, DetailsActivity.class);
+            intent.putExtra("web_url", newsItem.webUrl);
+            context.startActivity(intent);
+        });
 
         return viewHolder;
     }
