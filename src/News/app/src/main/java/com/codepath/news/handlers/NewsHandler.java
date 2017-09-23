@@ -31,7 +31,7 @@ public class NewsHandler {
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
         Context context = v.getContext();
 
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_action_name);
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_action_share);
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");

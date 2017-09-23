@@ -39,4 +39,9 @@
         <item name="android:textSize">14sp</item>
         <item name="android:background">@color/colorSectionName</item>
     </style>
+    <style name="ShareButton">
+        <item name="android:background">@drawable/ic_share_black</item>
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+    </style>
 </resources>
