@@ -9,9 +9,12 @@ import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.codepath.news.R;
 import com.codepath.news.models.News;
@@ -29,7 +32,7 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public NewsAdapter(Context context, ArrayList<News> newsItems) {
         mContext = context;
-        mNewsItems= newsItems;
+        mNewsItems = newsItems;
     }
 
     @Override
@@ -40,45 +43,15 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         View itemView = inflater.inflate(R.layout.list_news, parent, false);
         viewHolder = new ViewHolderNews(itemView);
-        itemView.setOnClickListener(v -> {
-            int position = viewHolder.getAdapterPosition();
-            News newsItem = mNewsItems.get(position);
-            displayWebpage(newsItem.webUrl);
-        });
 
         return viewHolder;
-    }
-
-    private void displayWebpage(String url) {
-        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-
-        Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_action_name);
-
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, url);
-
-        int requestCode = 100;
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
-                requestCode,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        builder.setActionButton(bitmap, mContext.getString(R.string.share_link),pendingIntent, true);
-        builder.setToolbarColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
-        CustomTabsIntent customTabsIntent = builder.build();
-
-        customTabsIntent.launchUrl(mContext, Uri.parse(url));
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         ViewHolderNews viewHolderNews = (ViewHolderNews) viewHolder;
-        News newsItem = mNewsItems.get(position);
-        //viewHolderNews.bind(mContext, newsItem);
-
-        viewHolderNews.binding.setNews(newsItem);
-        viewHolderNews.binding.executePendingBindings();
+        News news = mNewsItems.get(position);
+        viewHolderNews.bind(news);
     }
 
     @Override

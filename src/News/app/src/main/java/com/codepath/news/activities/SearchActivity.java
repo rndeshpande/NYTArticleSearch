@@ -55,6 +55,8 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     private int mHits = 0;
     private String mUserSearch = "";
 
+    private final static String TAG = "Search";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         scrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // TODO : use the page, itemscount and other parameters to load the next content
                 loadContent();
             }
         };
@@ -87,7 +90,6 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     private void loadContent() {
         if (mOffset <= mHits) {
-            Log.d("DATA", "getting data");
             getResponse();
         }
     }
@@ -112,14 +114,13 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
             @Override
             public void onResponse(Call<NewsSearchResponse> call, Response<NewsSearchResponse> response) {
                 if (!response.isSuccessful()) {
-                    Log.d("DATA", Integer.toString(response.code()));
+                    Log.e(TAG, Integer.toString(response.code()));
                 } else {
                     GsonBuilder gsonBuilder = new GsonBuilder();
                     final NewsSearchResponse searchResponse = response.body();
                     final ArrayList<News> resultNews = searchResponse.newsDocs.newsItems;
                     mOffset = searchResponse.newsDocs.meta.offset;
                     mHits = searchResponse.newsDocs.meta.hits;
-                    Log.d("DATA", "results fetched");
                     updateDataset(resultNews);
                 }
             }

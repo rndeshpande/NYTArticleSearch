@@ -3,15 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="news"
             type="com.codepath.news.models.News" />
+
+        <variable
+            name="handler"
+            type="com.codepath.news.handlers.NewsHandler" />
     </data>
 
     <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         style="@style/ListItem"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick='@{(view) -> handler.loadUrl(view, news.webUrl)}'>
 
         <ImageView
             android:id="@+id/ivThumbnail"
@@ -19,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            app:imageUrl = '@{news.multimedia.size() > 0 ? news.multimedia.get(0).url: ""}'/>
+            app:imageUrl='@{news.multimedia.size() > 0 ? news.multimedia.get(0).url: ""}' />
 
         <TextView
             android:id="@+id/tvHeadline"
@@ -48,5 +54,14 @@
             android:layout_below="@id/tvSectionName"
             android:layout_marginTop="5dp"
             android:text='@{news.snippet}' />
+
+        <Button
+            android:id="@+id/btnShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvSnippet"
+            android:onClick='@{(view) -> handler.onShare(view, news.webUrl)}'
+            android:text="@string/share_article" />
+
     </RelativeLayout>
 </layout>

@@ -18,4 +18,7 @@
     <string name="sort_order">Sort Order</string>
     <string name="share_link">Share Link</string>
     <string name="newest">newest</string>
+    <string name="share_article">Share</string>
+    <string name="share_intent_title">Share Article</string>
+    <string name="share_subject">Hey! Check this out from The New York Times.</string>
 </resources>
