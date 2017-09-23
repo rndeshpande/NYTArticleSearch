@@ -1,36 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
-    style="@style/ListItem" >
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/ivThumbnail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+    <data>
+        <variable
+            name="news"
+            type="com.codepath.news.models.News" />
+    </data>
 
-    <TextView
-        android:id="@+id/tvHeadline"
+    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        style="@style/ListItem"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ivThumbnail"
-        style="@style/ListItemHeadline"
-        android:layout_marginTop="5dp"/>
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tvSectionName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvHeadline"
-        android:layout_alignParentStart="true"
-        style="@style/ListItemSectionName"
-        android:layout_marginTop="5dp"/>
-    <TextView
-        android:id="@+id/tvSnippet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvSectionName"
-        style="@style/ListItemSnippet"
-        android:layout_marginTop="5dp" />
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/ivThumbnail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            app:imageUrl = '@{news.multimedia.size() > 0 ? news.multimedia.get(0).url: ""}'/>
+
+        <TextView
+            android:id="@+id/tvHeadline"
+            style="@style/ListItemHeadline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ivThumbnail"
+            android:layout_marginTop="5dp"
+            android:text='@{news.headline.main}' />
+
+        <TextView
+            android:id="@+id/tvSectionName"
+            style="@style/ListItemSectionName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvHeadline"
+            android:layout_marginTop="5dp"
+            android:text='@{news.sectionName}' />
+
+        <TextView
+            android:id="@+id/tvSnippet"
+            style="@style/ListItemSnippet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvSectionName"
+            android:layout_marginTop="5dp"
+            android:text='@{news.snippet}' />
+    </RelativeLayout>
+</layout>

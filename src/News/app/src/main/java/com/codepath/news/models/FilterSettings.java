@@ -8,19 +8,19 @@ import org.parceler.Parcel;
 @Parcel
 public class FilterSettings {
 
-    private String beginYear;
-    private String beginMonth;
-    private String beginDay;
-    private int sortSelectedIndex;
-    private String sortSelectedText;
-    private boolean isCheckedArts;
-    private boolean isCheckedFashion;
-    private boolean isCheckedSports;
+    public int beginYear;
+    public int beginMonth;
+    public int beginDay;
+    public int sortSelectedIndex;
+    public String sortSelectedText;
+    public boolean isCheckedArts;
+    public boolean isCheckedFashion;
+    public boolean isCheckedSports;
 
     public FilterSettings() {
     }
 
-    public FilterSettings(String beginYear, String beginMonth, String beginDay, int sortSelectedIndex, String sortSelectedText, boolean isCheckedArts, boolean isCheckedFashion, boolean isCheckedSports) {
+    public FilterSettings(int beginYear, int beginMonth, int beginDay, int sortSelectedIndex, String sortSelectedText, boolean isCheckedArts, boolean isCheckedFashion, boolean isCheckedSports) {
         this.beginYear = beginYear;
         this.beginMonth = beginMonth;
         this.beginDay = beginDay;
@@ -67,29 +67,31 @@ public class FilterSettings {
         return sortSelectedText;
     }
 
-    public void setSortSelectedText(String sortSelectedText) { this.sortSelectedText = sortSelectedText; }
+    public void setSortSelectedText(String sortSelectedText) {
+        this.sortSelectedText = sortSelectedText;
+    }
 
-    public String getBeginYear() {
+    public int getBeginYear() {
         return beginYear;
     }
 
-    public void setBeginYear(String beginYear) {
+    public void setBeginYear(int beginYear) {
         this.beginYear = beginYear;
     }
 
-    public String getBeginMonth() {
+    public int getBeginMonth() {
         return beginMonth;
     }
 
-    public void setBeginMonth(String beginMonth) {
+    public void setBeginMonth(int beginMonth) {
         this.beginMonth = beginMonth;
     }
 
-    public String getBeginDay() {
+    public int getBeginDay() {
         return beginDay;
     }
 
-    public void setBeginDay(String beginDay) {
+    public void setBeginDay(int beginDay) {
         this.beginDay = beginDay;
     }
 }

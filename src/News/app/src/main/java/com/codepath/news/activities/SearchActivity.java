@@ -1,5 +1,6 @@
 package com.codepath.news.activities;
 
+import android.databinding.DataBindingUtil;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 
@@ -13,8 +14,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.codepath.news.databinding.ActivitySearchBinding;
 import com.codepath.news.fragments.FilterDialogFragment;
 import com.codepath.news.R;
 import com.codepath.news.adapters.NewsAdapter;
@@ -32,9 +33,6 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,8 +41,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SearchActivity extends AppCompatActivity implements FilterDialogFragment.OnFragmentInteractionListener {
 
-    @BindView(R.id.rvResults)
     RecyclerView rvResults;
+    private ActivitySearchBinding binding;
 
     StaggeredGridLayoutManager mLayoutManager;
     NewsAdapter adapter;
@@ -61,17 +59,17 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
-        ButterKnife.bind(this);
-        Stetho.initializeWithDefaults(this);
 
         initialize();
         loadContent();
     }
 
     private void initialize() {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
+        Stetho.initializeWithDefaults(this);
         mNewsItems = new ArrayList<>();
         adapter = new NewsAdapter(this, mNewsItems);
+        rvResults = binding.rvResults;
 
         rvResults.setAdapter(adapter);
 
@@ -89,6 +87,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     private void loadContent() {
         if (mOffset <= mHits) {
+            Log.d("DATA", "getting data");
             getResponse();
         }
     }
@@ -120,7 +119,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                     final ArrayList<News> resultNews = searchResponse.newsDocs.newsItems;
                     mOffset = searchResponse.newsDocs.meta.offset;
                     mHits = searchResponse.newsDocs.meta.hits;
-
+                    Log.d("DATA", "results fetched");
                     updateDataset(resultNews);
                 }
             }

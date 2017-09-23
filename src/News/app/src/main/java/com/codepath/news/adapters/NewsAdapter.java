@@ -14,14 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.codepath.news.R;
-import com.codepath.news.activities.DetailsActivity;
 import com.codepath.news.models.News;
 
-import org.parceler.Parcels;
-
 import java.util.ArrayList;
-
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 /**
  * Created by rdeshpan on 9/17/2017.
@@ -80,7 +75,10 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         ViewHolderNews viewHolderNews = (ViewHolderNews) viewHolder;
         News newsItem = mNewsItems.get(position);
-        viewHolderNews.bind(mContext, newsItem);
+        //viewHolderNews.bind(mContext, newsItem);
+
+        viewHolderNews.binding.setNews(newsItem);
+        viewHolderNews.binding.executePendingBindings();
     }
 
     @Override

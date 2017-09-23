@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.codepath.news.R;
 import com.codepath.news.models.FilterSettings;
 
 import java.util.HashMap;
@@ -28,6 +29,9 @@ public class CommonHelper {
     private static final String IS_CHECKED_ARTS = "isCheckedArts";
     private static final String IS_CHECKED_FASHION = "isCheckedFashion";
     private static final String IS_CHECKED_SPORTS = "isCheckedSports";
+    private static final int DEFAULT_YEAR = 2017;
+    private static final int DEFAULT_MONTH = 1;
+    private static final int DEFAULT_DAY = 1;
 
 
     public static String getBaseUrlNytSearch() {
@@ -50,8 +54,8 @@ public class CommonHelper {
         FilterSettings settings = getFilterSettings(context);
         Map<String, String> map = new HashMap<>();
 
-        String beginMonth = settings.getBeginMonth().length() > 1 ? settings.getBeginMonth() : "0" + settings.getBeginMonth();
-        String beginDay = settings.getBeginDay().length() > 1 ? settings.getBeginDay() : "0" + settings.getBeginDay();
+        String beginMonth = Integer.toString(settings.getBeginMonth()).length() > 1 ? Integer.toString(settings.getBeginMonth()) : "0" + Integer.toString(settings.getBeginMonth());
+        String beginDay = Integer.toString(settings.getBeginDay()).length() > 1 ? Integer.toString(settings.getBeginDay()) : "0" +Integer.toString(settings.getBeginDay());
         String beginDate = settings.getBeginYear() + beginMonth + beginDay;
         map.put("begin_date", beginDate);
         map.put("sort", settings.getSortSelectedText());
@@ -86,11 +90,11 @@ public class CommonHelper {
     public static FilterSettings getFilterSettings(Context context) {
 
         SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String beginYear = sharedpreferences.getString(BEGIN_YEAR, "1851");
-        String beginMonth = sharedpreferences.getString(BEGIN_MONTH, "01");
-        String beginDay = sharedpreferences.getString(BEGIN_DAY, "01");
+        int beginYear = sharedpreferences.getInt(BEGIN_YEAR, DEFAULT_YEAR);
+        int beginMonth = sharedpreferences.getInt(BEGIN_MONTH, DEFAULT_MONTH);
+        int beginDay = sharedpreferences.getInt(BEGIN_DAY, DEFAULT_DAY);
         int sortSelectedIndex = sharedpreferences.getInt(SORT_SELECTED_INDEX, 1);
-        String sortSelectedText = sharedpreferences.getString(SORT_SELECTED_TEXT, "newest");
+        String sortSelectedText = sharedpreferences.getString(SORT_SELECTED_TEXT, context.getString(R.string.newest));
         Boolean isCheckedArts = sharedpreferences.getBoolean(IS_CHECKED_ARTS, false);
         Boolean isCheckedFashion = sharedpreferences.getBoolean(IS_CHECKED_FASHION, false);
         Boolean isCheckedSports = sharedpreferences.getBoolean(IS_CHECKED_SPORTS, false);
@@ -102,9 +106,9 @@ public class CommonHelper {
         SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
-        editor.putString(BEGIN_YEAR, settings.getBeginYear());
-        editor.putString(BEGIN_MONTH, settings.getBeginMonth());
-        editor.putString(BEGIN_DAY, settings.getBeginDay());
+        editor.putInt(BEGIN_YEAR, settings.getBeginYear());
+        editor.putInt(BEGIN_MONTH, settings.getBeginMonth());
+        editor.putInt(BEGIN_DAY, settings.getBeginDay());
         editor.putInt(SORT_SELECTED_INDEX, settings.getSortSelectedIndex());
         editor.putString(SORT_SELECTED_TEXT, settings.getSortSelectedText());
         editor.putBoolean(IS_CHECKED_ARTS, settings.isCheckedArts());

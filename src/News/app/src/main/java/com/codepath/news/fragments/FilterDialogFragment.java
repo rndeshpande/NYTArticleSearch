@@ -1,6 +1,7 @@
 package com.codepath.news.fragments;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
@@ -14,12 +15,10 @@ import android.widget.DatePicker;
 import android.widget.Spinner;
 
 import com.codepath.news.R;
+import com.codepath.news.databinding.FragmentFilterDialogBinding;
 import com.codepath.news.models.FilterSettings;
 
 import org.parceler.Parcels;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 /**
@@ -32,24 +31,19 @@ import butterknife.ButterKnife;
  */
 public class FilterDialogFragment extends DialogFragment {
 
-    @BindView(R.id.dpBeginDate)
     DatePicker dpBeginDate;
 
-    @BindView(R.id.spSort)
     Spinner spSort;
 
-    @BindView(R.id.cbArts)
     CheckBox cbArts;
 
-    @BindView(R.id.cbSports)
     CheckBox cbSports;
 
-    @BindView(R.id.cbFashion)
     CheckBox cbFashion;
 
-    @BindView(R.id.btnApply)
     Button btnApply;
 
+    FragmentFilterDialogBinding binding;
 
     private OnFragmentInteractionListener mListener;
 
@@ -65,43 +59,25 @@ public class FilterDialogFragment extends DialogFragment {
         return fragment;
     }
 
-    /*
-    public static FilterDialogFragment newInstance(FilterSettings settings) {
-        FilterDialogFragment fragment = new FilterDialogFragment();
-
-        Bundle args = new Bundle();
-
-        args.putString("beginYear", settings.getBeginYear());
-        args.putString("beginMonth", settings.getBeginMonth());
-        args.putString("beginDay", settings.getBeginDay());
-        args.putInt("sortSelectedIndex", settings.getSortSelectedIndex());
-        args.putBoolean("isCheckedArts", settings.isCheckedArts());
-        args.putBoolean("isCheckedFashion", settings.isCheckedFashion());
-        args.putBoolean("isCheckedSports", settings.isCheckedSports());
-
-        fragment.setArguments(args);
-        return fragment;
-    }
-    */
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_filter_dialog, container, false);
-        ButterKnife.bind(this, view);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_filter_dialog, container, false);
+
+        View view = binding.getRoot();
 
         if (getArguments() != null) {
             FilterSettings settings = (FilterSettings) Parcels.unwrap(getArguments().getParcelable("filter_settings"));
-            setFields(settings);
+            binding.setSettings(settings);
         }
 
+        btnApply = binding.btnApply;
         btnApply.setOnClickListener(v -> {
             onButtonPressed();
             dismiss();
@@ -110,21 +86,18 @@ public class FilterDialogFragment extends DialogFragment {
         return view;
     }
 
-    private void setFields(FilterSettings settings) {
-        dpBeginDate.updateDate(Integer.parseInt(settings.getBeginYear()), Integer.parseInt(settings.getBeginMonth()), Integer.parseInt(settings.getBeginDay()));
-
-        spSort.setSelection(settings.getSortSelectedIndex());
-        cbArts.setChecked(settings.isCheckedArts());
-        cbFashion.setChecked(settings.isCheckedFashion());
-        cbSports.setChecked(settings.isCheckedSports());
-    }
-
     public void onButtonPressed() {
         mListener = (OnFragmentInteractionListener) getActivity();
         if (mListener != null) {
-            FilterSettings settings = new FilterSettings(Integer.toString(dpBeginDate.getYear()),
-                    Integer.toString(dpBeginDate.getMonth()),
-                    Integer.toString(dpBeginDate.getDayOfMonth()),
+            dpBeginDate = binding.dpBeginDate;
+            cbArts = binding.cbArts;
+            cbFashion = binding.cbFashion;
+            cbSports = binding.cbSports;
+            spSort = binding.spSort;
+
+            FilterSettings settings = new FilterSettings(dpBeginDate.getYear(),
+                    dpBeginDate.getMonth(),
+                    dpBeginDate.getDayOfMonth(),
                     spSort.getSelectedItemPosition(),
                     spSort.getSelectedItem().toString(),
                     cbArts.isChecked(),
