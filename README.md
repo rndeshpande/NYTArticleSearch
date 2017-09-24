@@ -2,7 +2,7 @@
 
 **News Search** is an android app that allows a user to search for articles on web using simple filters. The app utilizes [New York Times Search API](http://developer.nytimes.com/docs/read/article_search_api_v2).
 
-Time spent: **30** hours spent in total
+Time spent: **32** hours spent in total
 
 ## User Stories
 
@@ -46,7 +46,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='Walkthroughs/Demo_2_Portrait.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='Walkthroughs/Demo_3_Portrait.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 <img src='Walkthroughs/Demo_2_NoNetwork_Portrait.gif' title='Video Walkthrough - No Network' width='' alt='Video Walkthrough - No Network' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
