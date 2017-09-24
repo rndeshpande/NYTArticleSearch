@@ -2,7 +2,7 @@
 
 **News Search** is an android app that allows a user to search for articles on web using simple filters. The app utilizes [New York Times Search API](http://developer.nytimes.com/docs/read/article_search_api_v2).
 
-Time spent: **24** hours spent in total
+Time spent: **30** hours spent in total
 
 ## User Stories
 
@@ -54,9 +54,9 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 ## Notes
 
 Describe any challenges encountered while building the app.
-  [X] Handling network failures when API throttling is in place. Retroit turned out to be quite flexible and easy to use for handling such cases
-  [X] Deciding the color palette to use for a text-heavy app such as a News app. The text needs to be readable with minimal background noise. Subdued color palette allowed for superior reading.
-  [X] Use of drawables and scaling them based on the view in context
+* [X] Handling network failures when API throttling is in place. Retroit turned out to be quite flexible and easy to use for handling such cases
+* [X] Deciding the color palette to use for a text-heavy app such as a News app. The text needs to be readable with minimal background noise. Subdued color palette allowed for superior reading.
+* [X] Use of drawables and scaling them based on the view in context
 
 ## Open-source libraries used
 
