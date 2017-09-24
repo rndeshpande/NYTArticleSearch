@@ -54,6 +54,9 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 ## Notes
 
 Describe any challenges encountered while building the app.
+  [X] Handling network failures when API throttling is in place. Retroit turned out to be quite flexible and easy to use for handling such cases
+  [X] Deciding the color palette to use for a text-heavy app such as a News app. The text needs to be readable with minimal background noise. Subdued color palette allowed for superior reading.
+  [X] Use of drawables and scaling them based on the view in context
 
 ## Open-source libraries used
 
