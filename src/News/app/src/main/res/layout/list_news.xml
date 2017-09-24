@@ -11,7 +11,8 @@
         <variable
             name="handler"
             type="com.codepath.news.handlers.NewsHandler" />
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
     </data>
 
     <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -25,8 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            app:imageUrl='@{news.multimedia.size() > 0 ? news.multimedia.get(0).url: ""}'
-            android:visibility='@{news.multimedia.size() == 0 ? View.GONE : View.VISIBLE }'/>
+            android:visibility='@{news.multimedia.size() == 0 ? View.GONE : View.VISIBLE }'
+            app:imageUrl='@{news.multimedia.size() > 0 ? news.multimedia.get(0).url: ""}' />
 
         <TextView
             android:id="@+id/tvHeadline"
@@ -38,14 +39,22 @@
             android:text='@{news.headline.main}' />
 
         <TextView
+            android:id="@+id/tvPubDate"
+            style="@style/ListItemPubDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvHeadline"
+            android:layout_marginTop="5dp"
+            android:text='@{news.dateFormatted}' />
+
+        <TextView
             android:id="@+id/tvSnippet"
             style="@style/ListItemSnippet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvHeadline"
+            android:layout_below="@id/tvPubDate"
             android:layout_marginTop="5dp"
-            android:text='@{news.snippet}'
-            />
+            android:text='@{news.snippet}' />
 
         <TextView
             android:id="@+id/tvSectionName"
@@ -56,15 +65,13 @@
             android:layout_below="@+id/tvSnippet"
             android:layout_marginTop="5dp"
             android:text='@{news.newDesk.toUpperCase()}'
-            android:visibility= '@{news.newDesk.equalsIgnoreCase("None")  ? View.GONE : View.VISIBLE}'/>
+            android:visibility='@{news.newDesk.equalsIgnoreCase("None")  ? View.GONE : View.VISIBLE}' />
 
         <Button
             android:id="@+id/btnShare"
-            android:layout_below="@id/tvSnippet"
-
-            android:layout_alignParentRight="true"
-            android:onClick='@{(view) -> handler.onShare(view, news.webUrl)}'
             style="@style/ShareButton"
-            />
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tvSnippet"
+            android:onClick='@{(view) -> handler.onShare(view, news.webUrl)}' />
     </RelativeLayout>
 </layout>

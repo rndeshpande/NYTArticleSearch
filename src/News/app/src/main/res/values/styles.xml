@@ -42,6 +42,11 @@
         <item name="android:textStyle">bold</item>
         <item name="android:padding">5dp</item>
     </style>
+
+    <style name="ListItemPubDate">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="ShareButton">
         <item name="android:background">@drawable/ic_share_black</item>
         <item name="android:layout_width">24dp</item>

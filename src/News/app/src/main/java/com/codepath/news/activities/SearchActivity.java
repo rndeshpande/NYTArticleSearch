@@ -15,11 +15,10 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.codepath.news.databinding.ActivitySearchBinding;
 import com.codepath.news.fragments.FilterDialogFragment;
@@ -54,6 +53,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     RecyclerView rvResults;
     SwipeRefreshLayout swipeContainer;
+    ProgressBar pbLoading;
     private ActivitySearchBinding binding;
 
     StaggeredGridLayoutManager mLayoutManager;
@@ -68,7 +68,6 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     private final static int RESPONSE_DELAY = 300;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +78,9 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     private void initialize() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
         Stetho.initializeWithDefaults(this);
+
+        pbLoading = binding.pbLoading;
+        pbLoading.setVisibility(ProgressBar.VISIBLE);
 
         mNewsItems = new ArrayList<>();
         adapter = new NewsAdapter(this, mNewsItems);
@@ -99,7 +101,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         rvResults.addOnScrollListener(scrollListener);
 
         swipeContainer = binding.swipeContainer;
-        swipeContainer.setOnRefreshListener(()-> {
+        swipeContainer.setOnRefreshListener(() -> {
             resetSearch();
             loadContent();
         });
@@ -110,11 +112,12 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     }
 
     private void loadContent() {
+        pbLoading.setVisibility(ProgressBar.VISIBLE);
         getResponse();
     }
 
     private void getResponse() {
-        if (isNetworkAvailable() && isOnline()) {
+        if (true) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addNetworkInterceptor(new StethoInterceptor())
                     .addNetworkInterceptor(chain -> {
@@ -145,11 +148,12 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                 public void onResponse(Call<NewsSearchResponse> call, Response<NewsSearchResponse> response) {
                     super.onResponse(call, response);
 
-                    if(response.isSuccessful()) {
+                    if (response.isSuccessful()) {
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         final NewsSearchResponse searchResponse = response.body();
                         final ArrayList<News> resultNews = searchResponse.newsDocs.newsItems;
                         updateDataset(resultNews);
+                        pbLoading.setVisibility(ProgressBar.INVISIBLE);
                     }
                 }
 
@@ -157,12 +161,14 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                 public void onFailure(Call<NewsSearchResponse> call, Throwable t) {
                     super.onFailure(call, t);
                     showMessage(getString(R.string.generic_failure_message));
+                    pbLoading.setVisibility(ProgressBar.INVISIBLE);
                 }
             };
 
             call.enqueue(callback);
         } else {
             showMessage(getString(R.string.internet_unavailable_message));
+            pbLoading.setVisibility(ProgressBar.INVISIBLE);
         }
     }
 
