@@ -4,10 +4,12 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.SystemClock;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import com.codepath.news.databinding.ActivitySearchBinding;
 import com.codepath.news.fragments.FilterDialogFragment;
@@ -27,9 +30,11 @@ import com.codepath.news.listeners.EndlessRecyclerViewScrollListener;
 import com.codepath.news.models.FilterSettings;
 import com.codepath.news.models.News;
 import com.codepath.news.models.NewsSearchResponse;
+import com.codepath.news.utils.CallbackWithRetry;
 import com.codepath.news.utils.CommonHelper;
 import com.facebook.stetho.Stetho;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.GsonBuilder;
 
 import org.parceler.Parcels;
@@ -37,6 +42,8 @@ import org.parceler.Parcels;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,26 +53,25 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SearchActivity extends AppCompatActivity implements FilterDialogFragment.OnFragmentInteractionListener {
 
     RecyclerView rvResults;
+    SwipeRefreshLayout swipeContainer;
     private ActivitySearchBinding binding;
 
     StaggeredGridLayoutManager mLayoutManager;
     NewsAdapter adapter;
     private EndlessRecyclerViewScrollListener scrollListener;
-    private FragmentManager fragManager;
 
     ArrayList<News> mNewsItems;
-    private final int NUM_OF_COLS = 4;
-    private int mOffset = 0;
-    private int mHits = 0;
+    private final int NUM_OF_COLS = 2;
+    private int mPage = 0;
     private String mUserSearch = "";
+    private final static String TAG = "CODEPATH_NYTSEARCH";
+    private final static int RESPONSE_DELAY = 300;
 
-    private final static String TAG = "Search";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initialize();
         loadContent();
     }
@@ -73,37 +79,54 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     private void initialize() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
         Stetho.initializeWithDefaults(this);
+
         mNewsItems = new ArrayList<>();
         adapter = new NewsAdapter(this, mNewsItems);
         rvResults = binding.rvResults;
 
         rvResults.setAdapter(adapter);
 
-        mLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        mLayoutManager = new StaggeredGridLayoutManager(NUM_OF_COLS, StaggeredGridLayoutManager.VERTICAL);
         rvResults.setLayoutManager(mLayoutManager);
 
         scrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // TODO : use the page, itemscount and other parameters to load the next content
+                mPage = page;
                 loadContent();
             }
         };
         rvResults.addOnScrollListener(scrollListener);
+
+        swipeContainer = binding.swipeContainer;
+        swipeContainer.setOnRefreshListener(()-> {
+            resetSearch();
+            loadContent();
+        });
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
     private void loadContent() {
-        if (mOffset <= mHits) {
-            getResponse();
-        }
+        getResponse();
     }
 
     private void getResponse() {
-        //if (isNetworkAvailable() && isOnline()) {
-        if (true) {
+        if (isNetworkAvailable() && isOnline()) {
+            OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .addNetworkInterceptor(new StethoInterceptor())
+                    .addNetworkInterceptor(chain -> {
+                        SystemClock.sleep(RESPONSE_DELAY);
+                        return chain.proceed(chain.request());
+                    })
+                    .build();
+
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(CommonHelper.getBaseUrlNytSearch())
                     .addConverterFactory(GsonConverterFactory.create())
+                    .client(okHttpClient)
                     .build();
 
             NYTApiInterface apiInterface = retrofit.create(NYTApiInterface.class);
@@ -112,39 +135,42 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                     CommonHelper.getUserSearchParam(mUserSearch),
                     CommonHelper.getQueryParams(this),
                     CommonHelper.getDataSource(),
-                    CommonHelper.getPageParams(mOffset),
+                    mPage,
                     CommonHelper.getApiKeyNyt()
             );
 
-            call.enqueue(new Callback<NewsSearchResponse>() {
+
+            Callback<NewsSearchResponse> callback = new CallbackWithRetry<NewsSearchResponse>(call) {
                 @Override
                 public void onResponse(Call<NewsSearchResponse> call, Response<NewsSearchResponse> response) {
-                    if (!response.isSuccessful()) {
-                        showMessage(getString(R.string.generic_failure_message));
-                    } else {
+                    super.onResponse(call, response);
+
+                    if(response.isSuccessful()) {
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         final NewsSearchResponse searchResponse = response.body();
                         final ArrayList<News> resultNews = searchResponse.newsDocs.newsItems;
-                        mOffset = searchResponse.newsDocs.meta.offset;
-                        mHits = searchResponse.newsDocs.meta.hits;
                         updateDataset(resultNews);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<NewsSearchResponse> call, Throwable t) {
+                    super.onFailure(call, t);
                     showMessage(getString(R.string.generic_failure_message));
                 }
-            });
+            };
+
+            call.enqueue(callback);
         } else {
             showMessage(getString(R.string.internet_unavailable_message));
         }
     }
 
     private void updateDataset(ArrayList<News> newsItems) {
-        int position = mNewsItems.size();
+        int positionStart = mNewsItems.size();
         mNewsItems.addAll(newsItems);
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemRangeInserted(positionStart, newsItems.size());
+        swipeContainer.setRefreshing(false);
     }
 
     @Override
@@ -184,7 +210,6 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         return super.onCreateOptionsMenu(menu);
     }
 
-
     @Override
     public void onFragmentInteraction(FilterSettings settings) {
         showMessage(getString(R.string.status_message));
@@ -196,10 +221,11 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     }
 
     private void resetSearch() {
-        mHits = 0;
-        mOffset = 0;
+        mPage = 0;
+        int size = mNewsItems.size();
         mNewsItems.clear();
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemRangeRemoved(0, size);
+        scrollListener.resetState();
     }
 
     private void showMessage(String message) {

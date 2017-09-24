@@ -30,7 +30,7 @@ public class CommonHelper {
     private static final String IS_CHECKED_FASHION = "isCheckedFashion";
     private static final String IS_CHECKED_SPORTS = "isCheckedSports";
     private static final int DEFAULT_YEAR = 2017;
-    private static final int DEFAULT_MONTH = 1;
+    private static final int DEFAULT_MONTH = 0;
     private static final int DEFAULT_DAY = 1;
 
 
@@ -54,7 +54,8 @@ public class CommonHelper {
         FilterSettings settings = getFilterSettings(context);
         Map<String, String> map = new HashMap<>();
 
-        String beginMonth = Integer.toString(settings.getBeginMonth()).length() > 1 ? Integer.toString(settings.getBeginMonth()) : "0" + Integer.toString(settings.getBeginMonth());
+        // DatePicker Month starts from 0
+        String beginMonth = Integer.toString(settings.getBeginMonth() + 1).length() > 1 ? Integer.toString(settings.getBeginMonth() + 1) : "0" + Integer.toString(settings.getBeginMonth()+ 1);
         String beginDay = Integer.toString(settings.getBeginDay()).length() > 1 ? Integer.toString(settings.getBeginDay()) : "0" +Integer.toString(settings.getBeginDay());
         String beginDate = settings.getBeginYear() + beginMonth + beginDay;
         map.put("begin_date", beginDate);
@@ -71,7 +72,9 @@ public class CommonHelper {
         if (settings.isCheckedSports())
             news_desk.append("\"Sports\" ");
 
-        map.put("fq","news_desk:(" + news_desk.toString().trim() + ")");
+        if(!news_desk.toString().isEmpty())
+            map.put("fq","news_desk:(" + news_desk.toString().trim() + ")");
+
         return map;
     }
 
