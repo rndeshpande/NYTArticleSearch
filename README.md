@@ -46,7 +46,8 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='Walkthroughs/Demo_1_Portrait.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='Walkthroughs/Demo_2_Portrait.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='Walkthroughs/Demo_2_NoNetwork_Portrait.gif' title='Video Walkthrough - No Network' width='' alt='Video Walkthrough - No Network' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
