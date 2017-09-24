@@ -1,6 +1,9 @@
 package com.codepath.news.activities;
 
+import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 
@@ -31,6 +34,7 @@ import com.google.gson.GsonBuilder;
 
 import org.parceler.Parcels;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -95,41 +99,46 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     }
 
     private void getResponse() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(CommonHelper.getBaseUrlNytSearch())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        //if (isNetworkAvailable() && isOnline()) {
+        if (true) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(CommonHelper.getBaseUrlNytSearch())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-        NYTApiInterface apiInterface = retrofit.create(NYTApiInterface.class);
+            NYTApiInterface apiInterface = retrofit.create(NYTApiInterface.class);
 
-        Call<NewsSearchResponse> call = apiInterface.getSearchResults(
-                CommonHelper.getUserSearchParam(mUserSearch),
-                CommonHelper.getQueryParams(this),
-                CommonHelper.getDataSource(),
-                CommonHelper.getPageParams(mOffset),
-                CommonHelper.getApiKeyNyt()
-        );
+            Call<NewsSearchResponse> call = apiInterface.getSearchResults(
+                    CommonHelper.getUserSearchParam(mUserSearch),
+                    CommonHelper.getQueryParams(this),
+                    CommonHelper.getDataSource(),
+                    CommonHelper.getPageParams(mOffset),
+                    CommonHelper.getApiKeyNyt()
+            );
 
-        call.enqueue(new Callback<NewsSearchResponse>() {
-            @Override
-            public void onResponse(Call<NewsSearchResponse> call, Response<NewsSearchResponse> response) {
-                if (!response.isSuccessful()) {
-                    Log.e(TAG, Integer.toString(response.code()));
-                } else {
-                    GsonBuilder gsonBuilder = new GsonBuilder();
-                    final NewsSearchResponse searchResponse = response.body();
-                    final ArrayList<News> resultNews = searchResponse.newsDocs.newsItems;
-                    mOffset = searchResponse.newsDocs.meta.offset;
-                    mHits = searchResponse.newsDocs.meta.hits;
-                    updateDataset(resultNews);
+            call.enqueue(new Callback<NewsSearchResponse>() {
+                @Override
+                public void onResponse(Call<NewsSearchResponse> call, Response<NewsSearchResponse> response) {
+                    if (!response.isSuccessful()) {
+                        showMessage(getString(R.string.generic_failure_message));
+                    } else {
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        final NewsSearchResponse searchResponse = response.body();
+                        final ArrayList<News> resultNews = searchResponse.newsDocs.newsItems;
+                        mOffset = searchResponse.newsDocs.meta.offset;
+                        mHits = searchResponse.newsDocs.meta.hits;
+                        updateDataset(resultNews);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<NewsSearchResponse> call, Throwable t) {
-                //TODO : Add error handling
-            }
-        });
+                @Override
+                public void onFailure(Call<NewsSearchResponse> call, Throwable t) {
+                    showMessage(getString(R.string.generic_failure_message));
+                }
+            });
+        } else {
+            showMessage(getString(R.string.internet_unavailable_message));
+        }
     }
 
     private void updateDataset(ArrayList<News> newsItems) {
@@ -178,7 +187,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
     @Override
     public void onFragmentInteraction(FilterSettings settings) {
-        Snackbar.make(this.findViewById(R.id.clMain), "Settings Updated", Snackbar.LENGTH_LONG).show();
+        showMessage(getString(R.string.status_message));
         CommonHelper.setFilterSettings(getApplicationContext(), settings);
 
         // Reset search params and trigger a fresh search
@@ -192,4 +201,31 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         mNewsItems.clear();
         adapter.notifyDataSetChanged();
     }
+
+    private void showMessage(String message) {
+        Snackbar.make(this.findViewById(R.id.clMain), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    private Boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 }

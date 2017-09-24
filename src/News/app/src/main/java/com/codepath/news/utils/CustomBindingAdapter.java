@@ -19,7 +19,8 @@ public class CustomBindingAdapter {
 
         Glide.with(view.getContext())
                 .load(CommonHelper.getImageUrl(imageUrl))
-                .override(300, 300)
+                .override(600, 600)
+                .centerCrop()
                 .placeholder(R.mipmap.ic_launcher)
                 .into(view);
     }

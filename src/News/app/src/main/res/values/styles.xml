@@ -9,13 +9,13 @@
     </style>
 
     <style name="BaseView">
-        <item name="android:layout_margin">15dp</item>
+        <item name="android:layout_margin">5dp</item>
     </style>
 
     <style name="ListItem">
         <item name="android:padding">5dp</item>
         <item name="android:layout_margin">5dp</item>
-        <item name="android:elevation">5dp</item>
+
         <item name="android:background">@drawable/list_item_background</item>
     </style>
 
@@ -36,8 +36,11 @@
     </style>
 
     <style name="ListItemSectionName">
-        <item name="android:textSize">14sp</item>
-        <item name="android:background">@color/colorSectionName</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">@drawable/news_section_name</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">5dp</item>
     </style>
     <style name="ShareButton">
         <item name="android:background">@drawable/ic_share_black</item>

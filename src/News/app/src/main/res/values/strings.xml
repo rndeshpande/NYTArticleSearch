@@ -21,4 +21,7 @@
     <string name="share_article">Share</string>
     <string name="share_intent_title">Share Article</string>
     <string name="share_subject">Hey! Check this out from The New York Times.</string>
+    <string name="status_message">Settings Updated</string>
+    <string name="internet_unavailable_message">Can\'t connection to the internet at the moment</string>
+    <string name="generic_failure_message">Unable to get news at the moment</string>
 </resources>
