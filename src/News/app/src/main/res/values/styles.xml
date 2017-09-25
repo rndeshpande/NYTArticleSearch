@@ -9,47 +9,48 @@
     </style>
 
     <style name="BaseView">
-        <item name="android:layout_margin">5dp</item>
+        <item name="android:layout_margin">@dimen/base_view_margin</item>
     </style>
 
     <style name="ListItem">
-        <item name="android:padding">5dp</item>
-        <item name="android:layout_margin">5dp</item>
+        <item name="android:padding">@dimen/list_item_padding</item>
+        <item name="android:layout_margin">@dimen/list_item_margin</item>
 
         <item name="android:background">@drawable/list_item_background</item>
     </style>
 
     <style name="date_picker_theme" parent="@android:style/Widget.DatePicker" />
-    
+
     <style name="filter_title">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">@dimen/filter_title_text_size</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="ListItemHeadline">
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">@dimen/ListItemHeadline_text_size</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="ListItemSnippet">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/ListItemSnippet_text_size</item>
     </style>
 
     <style name="ListItemSectionName">
-        <item name="android:textSize">10sp</item>
+        <item name="android:textSize">@dimen/ListItemSectionName_text_size</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:background">@drawable/news_section_name</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:padding">5dp</item>
+        <item name="android:padding">@dimen/ListItemSectionName_padding</item>
     </style>
 
     <style name="ListItemPubDate">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/ListItemPubDate_text_size</item>
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="ShareButton">
         <item name="android:background">@drawable/ic_share_black</item>
-        <item name="android:layout_width">24dp</item>
-        <item name="android:layout_height">24dp</item>
+        <item name="android:layout_width">@dimen/ShareButton_width</item>
+        <item name="android:layout_height">@dimen/ShareButton_height</item>
     </style>
 </resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="list_item_padding">5dp</dimen>
+    <dimen name="list_item_margin">5dp</dimen>
+    <dimen name="list_item_textview_margin_top">5dp</dimen>
+
+    <dimen name="base_view_margin">5dp</dimen>
+
+    <dimen name="filter_title_text_size">20sp</dimen>
+    <dimen name="ListItemHeadline_text_size">17sp</dimen>
+    <dimen name="ListItemSnippet_text_size">12sp</dimen>
+    <dimen name="ListItemSectionName_text_size">10sp</dimen>
+    <dimen name="ListItemSectionName_padding">5dp</dimen>
+
+    <dimen name="ListItemPubDate_text_size">12sp</dimen>
+
+    <dimen name="ShareButton_width">24dp</dimen>
+    <dimen name="ShareButton_height">24dp</dimen>
+
+    <dimen name="filter_date_margin_top">20dp</dimen>
+    <dimen name="filter_datepicker_margin_bottom">10dp</dimen>
+    <dimen name="filter_sort_margin_top">20dp</dimen>
+    <dimen name="filter_sort_spinner_margin_bottom">20dp</dimen>
+    <dimen name="filter_newsdesk_margin_top">10dp</dimen>
+    <dimen name="filter_checkbox_margin_start">50dp</dimen>
+    <dimen name="filter_checkbox_sport_margin_bottom">20dp</dimen>
+</resources>
