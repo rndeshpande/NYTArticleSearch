@@ -62,7 +62,8 @@ dependencies {
     compile 'com.facebook.stetho:stetho:1.4.1'
     compile 'com.facebook.stetho:stetho-okhttp3:1.4.1'
 
-    compile 'com.android.support:customtabs:25.2.0'
+    compile 'com.android.support:customtabs:25.3.1'
+    annotationProcessor 'com.android.databinding:compiler:2.3.0'
 }
 
 apply plugin: 'com.android.application'
