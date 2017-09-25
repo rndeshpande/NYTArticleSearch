@@ -118,7 +118,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     }
 
     private void getResponse() {
-        if (true) {
+        if (isNetworkAvailable() && isOnline()) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addNetworkInterceptor(new StethoInterceptor())
                     .addNetworkInterceptor(chain -> {
