@@ -30,9 +30,23 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<News> mNewsItems;
     private Context mContext;
 
+    private final static int MULTIMEDIA = 1;
+    private final static int TEXT_ONLY = 2;
+
     public NewsAdapter(Context context, ArrayList<News> newsItems) {
         mContext = context;
         mNewsItems = newsItems;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        News news = mNewsItems.get(position);
+
+        if (news.multimedia.size() > 0) {
+            return MULTIMEDIA;
+        } else {
+            return  TEXT_ONLY;
+        }
     }
 
     @Override
@@ -40,18 +54,40 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final RecyclerView.ViewHolder viewHolder;
         final Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
+        View itemView;
 
-        View itemView = inflater.inflate(R.layout.list_news, parent, false);
-        viewHolder = new ViewHolderNews(itemView);
-
+        switch (viewType) {
+            case MULTIMEDIA:
+                itemView = inflater.inflate(R.layout.list_news, parent, false);
+                viewHolder = new ViewHolderNews(itemView);
+                break;
+            case TEXT_ONLY:
+                itemView = inflater.inflate(R.layout.list_news_textonly, parent, false);
+                viewHolder = new ViewHolderNewsTextOnly(itemView);
+                break;
+            default:
+                viewHolder = null;
+                break;
+        }
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        ViewHolderNews viewHolderNews = (ViewHolderNews) viewHolder;
         News news = mNewsItems.get(position);
-        viewHolderNews.bind(news);
+
+        switch (viewHolder.getItemViewType()) {
+            case MULTIMEDIA:
+                ViewHolderNews viewHolderNews = (ViewHolderNews) viewHolder;
+                viewHolderNews.bind(news);
+                break;
+            case TEXT_ONLY:
+                ViewHolderNewsTextOnly viewHolderNewsTextOnly = (ViewHolderNewsTextOnly) viewHolder;
+                viewHolderNewsTextOnly.bind(news);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
