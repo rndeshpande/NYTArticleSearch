@@ -18,6 +18,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import com.codepath.news.databinding.ActivitySearchBinding;
@@ -72,7 +73,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initialize();
-        loadContent();
+        loadContent(true);
     }
 
     private void initialize() {
@@ -95,7 +96,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 mPage = page;
-                loadContent();
+                loadContent(false);
             }
         };
         rvResults.addOnScrollListener(scrollListener);
@@ -103,7 +104,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         swipeContainer = binding.swipeContainer;
         swipeContainer.setOnRefreshListener(() -> {
             resetSearch();
-            loadContent();
+            loadContent(false);
         });
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -111,8 +112,8 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                 android.R.color.holo_red_light);
     }
 
-    private void loadContent() {
-        pbLoading.setVisibility(ProgressBar.VISIBLE);
+    private void loadContent(boolean showProgress) {
+        pbLoading.setVisibility(showProgress ? ProgressBar.VISIBLE: ProgressBar.INVISIBLE);
         getResponse();
     }
 
@@ -192,7 +193,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
             public boolean onQueryTextSubmit(final String query) {
                 resetSearch();
                 mUserSearch = query;
-                loadContent();
+                loadContent(true);
                 searchView.clearFocus();
                 return true;
             }
@@ -223,7 +224,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
         // Reset search params and trigger a fresh search
         resetSearch();
-        loadContent();
+        loadContent(true);
     }
 
     private void resetSearch() {
